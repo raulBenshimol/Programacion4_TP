@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package reservas.payment.v1;
+
+option csharp_namespace = "SistemaReservas.Contracts.Payment.V1";
+
+// Contrato compartido por Booking.Business (cliente) y Payment.gRPC (servidor).
+service PaymentService {
+  rpc ProcesarPago (PaymentRequestDto) returns (PaymentResponseDto);
+}
+
+message PaymentRequestDto {
+  string reserva_id = 1;       // UUID de la reserva retenida.
+  double monto = 2;            // Alineado al diagrama: PaymentRequestDto.Monto: double.
+  bool simular_rechazo = 3;    // Solo para pruebas del TP.
+}
+
+message PaymentResponseDto {
+  bool exitoso = 1;            // Alineado a PaymentResponseDto.Exitoso.
+  string mensaje = 2;          // Alineado a PaymentResponseDto.Mensaje.
+  string codigo_transferencia = 3; // Alineado a PaymentResponseDto.CodigoTransferencia.
+}
+
+enum EstadoPago {
+  ESTADO_PAGO_NO_ESPECIFICADO = 0;
+  ESTADO_PAGO_EXITOSO = 1;     // Equivale a EstadoPago.Exitoso.
+  ESTADO_PAGO_FALLIDO = 2;     // Equivale a EstadoPago.Fallido.
+}

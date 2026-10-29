@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "SolicitudReserva.schema.json",
+  "title": "SolicitudReserva",
+  "description": "Contrato del mensaje que Availability publica para que Booking procese una solicitud de reserva. No representa una reserva confirmada.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "solicitudId",
+    "eventoId",
+    "asientoId",
+    "usuarioId"
+  ],
+  "properties": {
+    "solicitudId": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Identificador único de la solicitud registrado por Availability; corresponde a SolicitudReserva.Id."
+    },
+    "eventoId": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Identificador del evento al que pertenece el asiento."
+    },
+    "asientoId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Identificador del asiento dentro del evento; por ejemplo, A15."
+    },
+    "usuarioId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Identificador del usuario autenticado que solicita la reserva."
+    }
+  }
+}

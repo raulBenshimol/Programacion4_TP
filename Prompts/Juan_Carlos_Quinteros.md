@@ -1,0 +1,1 @@
+1-Estamos trabajando en el diseño de un sistema de reserva de asientos basado en microservicios. Ya casi finalizamos los diagramas de clases y ahora necesito analizar y diseñar los contratos de comunicacion entre los distintos coponentes.

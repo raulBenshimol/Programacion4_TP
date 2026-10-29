@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/contracts/ReservaConfirmada.schema.json",
+  "title": "ReservaConfirmada",
+  "description": "Contrato del evento que Booking publica mediante IEventPublisher.PublicarReservaConfirmada y que consume Notifications si se agrega al diagrama.",
+  "type": "object",
+  "properties": {
+    "reservaId": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Identificador de la reserva confirmada."
+    },
+    "usuarioId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Identificador del usuario destinatario de la notificación."
+    },
+    "eventoId": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Identificador del evento al que pertenece el asiento."
+    },
+    "asientoId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Identificador del asiento reservado; por ejemplo, A15."
+    }
+  },
+  "required": [
+    "reservaId",
+    "usuarioId",
+    "eventoId",
+    "asientoId"
+  ],
+  "additionalProperties": false
+}
