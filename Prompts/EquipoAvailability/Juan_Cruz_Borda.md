@@ -1,0 +1,1 @@
+Explicame el diagrama de clases de Availability que es un mvc, en el cual hay que aplicar clean architecture para seguir los pasos correctos en la implementación del código
