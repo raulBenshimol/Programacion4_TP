@@ -7,7 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.22">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Availability.Application\Availability.Application.csproj" />
     <ProjectReference Include="..\Availability.Controllers\Availability.Controllers.csproj" />
+    <ProjectReference Include="..\Availability.Domain\Availability.Domain.csproj" />
     <ProjectReference Include="..\Availability.Infrastructure\Availability.Infrastructure.csproj" />
   </ItemGroup>
 
