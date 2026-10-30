@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Grpc.AspNetCore" Version="2.64.0" />
+	  <!-- PENDIENTE (punto e, autenticación): agregar Microsoft.AspNetCore.Authentication.JwtBearer 9.x
+     para validar localmente el JWT emitido por Keycloak. -->
+	  <!-- PENDIENTE (capa Data): agregar Microsoft.EntityFrameworkCore.Sqlite 9.0.22 (misma versión que Availability y Booking).
+     SQLite se elige por practicidad para el TP: la base es un solo archivo y no requiere instalar un motor.
+     En un sistema real se usaría un motor como SQL Server o PostgreSQL. -->
+  </ItemGroup>
+
+	<ItemGroup>
+		<Protobuf Include="..\Contract\gRPC\payment.proto" GrpcServices="Server" Link="Protos\payment.proto" />
+	</ItemGroup>
+
+</Project>
