@@ -5,8 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Availability.Application.Interfaces;
 using Availability.Controllers.DTOs;
-using Availability.Application.Interfaces;
-using Availability.Controllers.DTOs;
+
 
 namespace Availability.Controllers.Presenters;
 

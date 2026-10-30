@@ -7,6 +7,7 @@ namespace Availability.Controllers.DTOs;
 
 public class SolicitudRequestDto
 {
+    public int EventoId { get; set; }
     public int AsientoId { get; set; }
     public int UsuarioId { get; set; }
 }
