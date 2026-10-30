@@ -1,6 +1,10 @@
-@Booking_HostAddress = http://localhost:5039
+@Booking_HostAddress = https://localhost:7109
+### Pegar acá el access_token que devuelve la prueba 1 de AuthServer.http (dura 30 minutos)
+@token = eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJTaXN0ZW1hUmVzZXJ2YXMiLCJpc3MiOiJBdXRoU2VydmVyIiwiZXhwIjoxNzkzNDAzMTk1LCJpYXQiOjE3OTM0MDEzOTUsInN1YiI6ImJvb2tpbmctYnVzaW5lc3MiLCJjbGllbnRfaWQiOiJib29raW5nLWJ1c2luZXNzIiwibmJmIjoxNzkzNDAxMzk1fQ.E-eecODXGkVq_Dd3m2Vu3o5Y-eLStnrjpV2pwREgmn6c4ki-TiEFjkdcvXqMceO16LQQIndLQY7kmiSU3XHWRKRnbi_8ELDf02ttsuYwC0bhDgPsnAyFiyvJ603VZobRG_AeKX0yMyfOy6OXlmYpf3ACELUqYr5gvhcx5yKh3Qu7V7Xxs7wTX6pDwaEotBXP52SeNEp-0vMupEbhC3g7waNRQwmJOZjcVBiDa7I0U1G3Yzr07AlRT1KCmV-6e0vBGI6TSHA1vpHuoZwVvRZweL54bM54qkW5jmw7lK5z88lGp15IsaunSIcKFGOX-dgTzpDu2OfuM7rucSP1hOcotA
 
-GET {{Booking_HostAddress}}/weatherforecast/
-Accept: application/json
+### 1) Sin token -> 401
+GET {{Booking_HostAddress}}/Booking/3fa85f64-5717-4562-b3fc-2c963f66afa6
 
-###
+### 2) Con token -> 200
+GET {{Booking_HostAddress}}/Booking/3fa85f64-5717-4562-b3fc-2c963f66afa6
+Authorization: Bearer {{token}}

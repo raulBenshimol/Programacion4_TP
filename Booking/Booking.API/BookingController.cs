@@ -1,9 +1,11 @@
 using Booking.Booking.Entities.Booking.API.DTOs;
 using Booking.Booking.Entities.Booking.Entities.Enums;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Booking.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class BookingController : ControllerBase
