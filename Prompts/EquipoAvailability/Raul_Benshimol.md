@@ -67,3 +67,6 @@
 .-es en capas
 
 .- ya los muchachos avansaron vamos a crear el anillo 3 y 4 con las migraciones y la base de datos, con sqlite, recuerda que tenemos que instalar los paquetes nuges
+
+.- vamos a terminar la conexion con el messagebroker te paso el stringConnection y revisar errores 
+

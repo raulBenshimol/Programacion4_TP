@@ -18,15 +18,21 @@ builder.Services.AddScoped<ConsultarDisponibilidadUseCase>();
 builder.Services.AddScoped<ObtenerResultadoSolicitudUseCase>();
 
 
-// 3. Presenter (Anillo 3)
-builder.Services.AddScoped<ISolicitudOutputPort, SolicitudPresenter>();
-builder.Services.AddScoped<SolicitudPresenter>(); // Lo registro también directo por si el controlador lo pide así
+// 3. Presenter (Anillo 3) - CAMBIO: Registramos una sola instancia para evitar el GUID en cero
+builder.Services.AddScoped<SolicitudPresenter>();
+builder.Services.AddScoped<ISolicitudOutputPort>(sp => sp.GetRequiredService<SolicitudPresenter>());
 
 
 // Registramos los controladores lógicos del Anillo 3 para que puedan ser utilizados mediante inyección de dependencias.
 // Controladores Lógicos del Anillo 3.1 
 builder.Services.AddScoped<Availability.Controllers.Controllers.AvailabilityController>();
 builder.Services.AddScoped<Availability.Controllers.Controllers.SeguimientoController>();
+
+// CAMBIO: Cliente HTTP para llamar a Booking (el de tu compañero)
+builder.Services.AddHttpClient("BookingClient", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7109/");
+});
 
 // 4. MVC
 builder.Services.AddControllersWithViews();
