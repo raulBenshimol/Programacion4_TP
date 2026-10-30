@@ -1,5 +1,4 @@
 <Solution>
-  <Project Path="AvailabilitySite/AvailabilitySite.csproj" Id="e97f3b58-f95d-407d-b4a6-266814c69213" />
   <Project Path="Booking/Booking.csproj" Id="0f766b78-5bf4-4d7f-8557-c73c3f7578ea" />
   <Folder Name="/Availability/" />
   <Folder Name="/Availability/1_Enterprise Business Rules/">
