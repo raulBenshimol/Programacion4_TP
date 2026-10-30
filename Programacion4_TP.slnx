@@ -1,3 +1,16 @@
 <Solution>
-  <Project Path="AvailabilitySite/AvailabilitySite.csproj" Id="e97f3b58-f95d-407d-b4a6-266814c69213" />
+  <Folder Name="/Availability/" />
+  <Folder Name="/Availability/1_Enterprise Business Rules/">
+    <Project Path="Availability.Domain/Availability.Domain.csproj" Id="40efab6f-8dca-4ff1-86f4-4578b2f449e9" />
+  </Folder>
+  <Folder Name="/Availability/2_Application Business Rules/">
+    <Project Path="Availability.Application/Availability.Application.csproj" Id="b7633323-3be0-4530-af9a-9912775f23af" />
+  </Folder>
+  <Folder Name="/Availability/3_Interface Adapters/">
+    <Project Path="Availability.Controllers/Availability.Controllers.csproj" Id="30e2db65-74cd-44b0-a6e8-4293a01c3609" />
+  </Folder>
+  <Folder Name="/Availability/4_Frameworks &amp; Drivers/">
+    <Project Path="Availability.Infrastructure/Availability.Infrastructure.csproj" Id="f609fc6b-7d53-4967-ae76-37e2bf53a7be" />
+    <Project Path="AvailabilitySite/AvailabilitySite.csproj" Id="e97f3b58-f95d-407d-b4a6-266814c69213" />
+  </Folder>
 </Solution>
