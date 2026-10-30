@@ -69,5 +69,4 @@
 .- ya los muchachos avansaron vamos a crear el anillo 3 y 4 con las migraciones y la base de datos, con sqlite, recuerda que tenemos que instalar los paquetes nuges
 
 .- vamos a terminar la conexion con el messagebroker te paso el stringConnection y revisar errores 
-Endpoint=sb://grupo8.servicebus.windows.net/;SharedAccessKeyName=All;
-SharedAccessKey=lB8xf+7oxZZgN6nstuMq6ZlbFogS+w6dR+ASbHpnv0E=;EntityPath=grupo8
+
