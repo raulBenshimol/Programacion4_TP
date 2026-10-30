@@ -1,0 +1,4 @@
+# Base SQLite local de Booking (se crea con dotnet ef database update; no va al repo).
+*.db
+*.db-shm
+*.db-wal
