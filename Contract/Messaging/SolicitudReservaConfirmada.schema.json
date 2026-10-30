@@ -6,23 +6,23 @@
   "type": "object",
   "properties": {
     "reservaId": {
-      "type": "string",
-      "format": "uuid",
+      "type": "integer",
+      "format": "Guid",
       "description": "Identificador de la reserva confirmada."
     },
     "usuarioId": {
-      "type": "string",
-      "minLength": 1,
+      "type": "integer",
+      "minimum": 1,
       "description": "Identificador del usuario destinatario de la notificación."
     },
     "eventoId": {
-      "type": "string",
-      "format": "uuid",
+      "type": "integer",
+      "format": "Guid",
       "description": "Identificador del evento al que pertenece el asiento."
     },
     "asientoId": {
-      "type": "string",
-      "minLength": 1,
+      "type": "integer",
+      "minimum": 1,
       "description": "Identificador del asiento reservado; por ejemplo, A15."
     }
   },
