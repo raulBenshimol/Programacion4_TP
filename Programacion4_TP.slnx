@@ -1,5 +1,7 @@
 <Solution>
-  <Project Path="Booking/Booking.csproj" Id="0f766b78-5bf4-4d7f-8557-c73c3f7578ea" />
+  <Folder Name="/Payment/">
+    <Project Path="Payment.Grpc/Payment.Grpc.csproj" Id="2b1fcd37-771c-41d2-a460-44b1185a9f65" />
+  </Folder>
   <Folder Name="/Availability/" />
   <Folder Name="/Availability/1_Enterprise Business Rules/">
     <Project Path="Availability.Domain/Availability.Domain.csproj" Id="40efab6f-8dca-4ff1-86f4-4578b2f449e9" />
@@ -14,4 +16,5 @@
     <Project Path="Availability.Infrastructure/Availability.Infrastructure.csproj" Id="f609fc6b-7d53-4967-ae76-37e2bf53a7be" />
     <Project Path="AvailabilitySite/AvailabilitySite.csproj" Id="e97f3b58-f95d-407d-b4a6-266814c69213" />
   </Folder>
+  <Project Path="Booking/Booking.csproj" Id="0f766b78-5bf4-4d7f-8557-c73c3f7578ea" />
 </Solution>
