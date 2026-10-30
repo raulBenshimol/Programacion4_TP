@@ -1,6 +1,20 @@
-@AuthServer_HostAddress = http://localhost:5044
+### seteo el puerto segun puerto https de launchSettings.json
+@AuthServer_HostAddress = https://localhost:7095
 
-GET {{AuthServer_HostAddress}}/weatherforecast/
-Accept: application/json
+### 1) Credenciales correctas -> 200 con access_token
+POST {{AuthServer_HostAddress}}/connect/token
+Content-Type: application/x-www-form-urlencoded
 
-###
+grant_type=client_credentials&client_id=booking-business&client_secret={{SecretoBooking}}
+
+### 2) Secreto incorrecto -> 401
+POST {{AuthServer_HostAddress}}/connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=client_credentials&client_id=booking-business&client_secret=cualquiera
+
+### 3) Tipo de acceso no soportado -> 400
+POST {{AuthServer_HostAddress}}/connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=password
