@@ -1,3 +1,4 @@
+using AuthServer.Services;
 namespace AuthServer
 {
 
@@ -11,6 +12,9 @@ namespace AuthServer
             // Add services to the container.
 
             builder.Services.AddControllers();
+
+            // Singleton: la clave privada se carga una sola vez.
+            builder.Services.AddSingleton<TokenService>();
 
             var app = builder.Build();
 
