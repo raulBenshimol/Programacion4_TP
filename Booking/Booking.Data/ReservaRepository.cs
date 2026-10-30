@@ -7,16 +7,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Booking.Booking.Data;
 
-// Implementación de IReservaRepository con EF Core. Además de guardar y leer,
-// traduce los errores de SQLite a excepciones del dominio, para que Business
-// no tenga que conocer EF Core ni SqliteException.
+// Implementa IReservaRepository con EF Core y traduce los errores de SQLite a excepciones
+// del dominio, para que Business no conozca EF Core ni SqliteException.
 public class ReservaRepository(BookingDbContext context) : IReservaRepository
 {
-    // Código extendido de SQLite para "UNIQUE constraint failed" (SQLITE_CONSTRAINT_UNIQUE).
+    // SQLITE_CONSTRAINT_UNIQUE. SQLite informa las columnas del índice que falló, no su nombre.
     private const int ErrorRestriccionUnica = 2067;
-
-    // SQLite no dice qué índice falló sino sus columnas, por ejemplo
-    // "UNIQUE constraint failed: Reservas.SolicitudId". Se reconoce el índice por ellas.
     private const string ColumnasIndiceAsientoActivo = "Reservas.EventoId, Reservas.AsientoId";
     private const string ColumnasIndiceSolicitudUnica = "Reservas.SolicitudId";
 
@@ -29,8 +25,7 @@ public class ReservaRepository(BookingDbContext context) : IReservaRepository
         }
         catch (DbUpdateException ex) when (ex.InnerException is SqliteException { SqliteExtendedErrorCode: ErrorRestriccionUnica } sqlite)
         {
-            // Se desengancha lo que falló para que el mismo DbContext se pueda seguir
-            // usando (por ejemplo, para guardar después la reserva como Rechazada).
+            // Se desengancha para poder seguir usando el DbContext (ej. guardarla como Rechazada).
             context.Entry(reserva).State = EntityState.Detached;
 
             if (sqlite.Message.Contains(ColumnasIndiceAsientoActivo))
@@ -46,9 +41,8 @@ public class ReservaRepository(BookingDbContext context) : IReservaRepository
 
     public async Task Actualizar(Reserva reserva, CancellationToken ct = default)
     {
-        // El WHERE del UPDATE compara contra el valor ORIGINAL de Version (el que se leyó)
-        // y se guarda el siguiente. Si la reserva vino sin tracking, Update toma el valor
-        // actual como original, así que se fija explícitamente antes de incrementarlo.
+        // Concurrencia optimista: el UPDATE compara la Version leída y guarda la siguiente.
+        // El original se fija a mano por si la reserva vino sin tracking.
         var entry = context.Reservas.Update(reserva);
         entry.Property(r => r.Version).OriginalValue = reserva.Version;
         reserva.Version++;
@@ -58,7 +52,6 @@ public class ReservaRepository(BookingDbContext context) : IReservaRepository
         }
         catch (DbUpdateConcurrencyException)
         {
-            // La Version en la base ya no coincide: otro proceso la cambió primero.
             entry.State = EntityState.Detached;
             reserva.Version--;
             throw new ConcurrenciaReservaException(reserva.Id);
@@ -68,9 +61,7 @@ public class ReservaRepository(BookingDbContext context) : IReservaRepository
     public Task<Reserva?> ObtenerPorSolicitudId(Guid solicitudId, CancellationToken ct = default) =>
         context.Reservas.FirstOrDefaultAsync(r => r.SolicitudId == solicitudId, ct);
 
-    // Mismo criterio que el índice parcial: ocupan el asiento las Retenidas y las
-    // Confirmadas. Una Retenida que ya pasó su vencimiento sigue contando hasta que
-    // el job la pase a Vencida, porque hasta ese momento la base también la bloquea.
+    // Mismo criterio que el índice parcial: una Retenida ya vencida ocupa hasta que el job la vence.
     public async Task<IReadOnlyList<string>> ObtenerAsientosOcupados(Guid eventoId, CancellationToken ct = default) =>
         await context.Reservas
             .AsNoTracking()
@@ -80,14 +71,8 @@ public class ReservaRepository(BookingDbContext context) : IReservaRepository
             .OrderBy(a => a)
             .ToListAsync(ct);
 
-    // Un solo UPDATE en vez de "leer las vencidas y actualizarlas una por una":
-    // - Es atómico: SQLite deja escribir a un solo proceso a la vez, así que si dos
-    //   réplicas corren el job a la vez la segunda espera y ya no ve esas filas como
-    //   Retenida (cada reserva cambia UNA sola vez).
-    // - Si el pago la confirmó un instante antes, ya no es Retenida y no se toca.
-    // - RETURNING * devuelve las filas tal como quedaron, para loguear cuáles vencieron.
-    // También sube Version, así que un cobro que estaba en curso sobre esa reserva
-    // falla al confirmar en vez de pisar el Vencida.
+    // Un solo UPDATE atómico: SQLite admite un escritor a la vez, así que con varias réplicas cada
+    // reserva se vence una sola vez. Sube Version para que un cobro en curso falle al confirmar.
     public async Task<IReadOnlyList<Reserva>> VencerRetenidas(DateTime ahora, CancellationToken ct = default) =>
         await context.Reservas
             .FromSql($"""
