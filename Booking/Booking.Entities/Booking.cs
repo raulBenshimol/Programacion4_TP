@@ -1,6 +1,6 @@
-namespace Booking
+namespace Booking.Booking.Entities
 {
-    public class Booking
+    public class BookingE
     {
         public DateOnly Date { get; set; }
 
