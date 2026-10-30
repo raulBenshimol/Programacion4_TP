@@ -10,13 +10,17 @@ namespace Payment.Grpc.Services
     {
         public override Task<PaymentResponseDto> ProcesarPago(PaymentRequestDto request, ServerCallContext context)
         {
-            // TEMPORAL: respuesta fija para verificar que el servidor gRPC funciona.
-            // Se reemplaza por la llamada a PaymentBusiness cuando exista esa capa.
+            // TEMPORAL: respuesta fija que respeta simular_rechazo, para que Booking pueda probar
+            // los caminos de pago aprobado y rechazado. Se reemplaza por la llamada a PaymentBusiness.
+            var approved = !request.SimularRechazo;
+
             var response = new PaymentResponseDto
             {
-                Exitoso = true,
-                Mensaje = $"Respuesta de prueba para la reserva {request.ReservaId}",
-                CodigoTransferencia = "PRUEBA"
+                Exitoso = approved,
+                Mensaje = approved
+                    ? $"Pago de prueba aprobado para la reserva {request.ReservaId}"
+                    : $"Pago de prueba rechazado para la reserva {request.ReservaId} (simular_rechazo = true)",
+                CodigoTransferencia = approved ? "PRUEBA" : string.Empty
             };
 
             return Task.FromResult(response);
