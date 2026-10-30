@@ -1,9 +1,11 @@
+using Microsoft.OpenApi.Models;
 using Availability.Application.Interfaces;
 using Availability.Application.UseCases;
 using Availability.Controllers.Presenters;
 using Availability.Infrastructure;
 using Availability.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,14 +17,31 @@ builder.Services.AddScoped<SolicitarReservaInteractor>();
 builder.Services.AddScoped<ConsultarDisponibilidadUseCase>();
 builder.Services.AddScoped<ObtenerResultadoSolicitudUseCase>();
 
+
 // 3. Presenter (Anillo 3)
 builder.Services.AddScoped<ISolicitudOutputPort, SolicitudPresenter>();
 builder.Services.AddScoped<SolicitudPresenter>(); // Lo registro también directo por si el controlador lo pide así
 
+
+// Registramos los controladores lógicos del Anillo 3 para que puedan ser utilizados mediante inyección de dependencias.
+// Controladores Lógicos del Anillo 3.1 
+builder.Services.AddScoped<Availability.Controllers.Controllers.AvailabilityController>();
+builder.Services.AddScoped<Availability.Controllers.Controllers.SeguimientoController>();
+
 // 4. MVC
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 var app = builder.Build();
+
+// Habilitar Swagger en desarrollo
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 // 5. (Dejamos esto comentado por ahora para hacer las migraciones en el próximo paso)
 /*
