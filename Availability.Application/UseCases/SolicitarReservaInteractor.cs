@@ -26,12 +26,13 @@ public class SolicitarReservaInteractor
         _outputPort = outputPort;
     }
 
-    public async Task Ejecutar(int asientoId, int usuarioId)
+    public async Task Ejecutar(int asientoId, int usuarioId, int eventoId)
     {
         // 1. Crear la entidad
         var solicitud = new SolicitudReserva
         {
             Id = Guid.NewGuid(),
+            EventoId = eventoId,
             AsientoId = asientoId,
             UsuarioId = usuarioId,
             Estado = EstadoSolicitud.PendientePago,

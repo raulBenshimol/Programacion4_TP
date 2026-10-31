@@ -43,7 +43,7 @@ public class AvailabilityController
     public async Task<SolicitudResponseDto> SolicitarReserva(SolicitudRequestDto request)
     {
         // 1. Ejecutamos el interactor
-        await _solicitarReserva.Ejecutar(request.AsientoId, request.UsuarioId);
+        await _solicitarReserva.Ejecutar(request.AsientoId, request.UsuarioId, request.EventoId);
 
         // 2. Devolvemos lo que el Presenter armó
         return _presenter.Response;

@@ -4,25 +4,43 @@ package reservas.payment.v1;
 
 option csharp_namespace = "SistemaReservas.Contracts.Payment.V1";
 
-// Contrato compartido por Booking.Business (cliente) y Payment.gRPC (servidor).
+// Contrato entre Booking (cliente) y Payment (servidor).
 service PaymentService {
+  // Cobra una reserva retenida.
+  // - Pago aprobado o rechazado: respuesta normal (estado gRPC OK); ver PaymentResponseDto.exitoso.
+  // - Errores gRPC solo para problemas técnicos o de pedido:
+  //   INVALID_ARGUMENT: datos inválidos (UUID mal formado, monto menor o igual a cero).
+  //   UNAUTHENTICATED: token ausente o inválido (cuando se active Keycloak).
+  // - Si Payment no responde a tiempo, Booking recibe UNAVAILABLE o DEADLINE_EXCEEDED
+  //   y lo trata como "pago no disponible".
+  // - Idempotencia: reserva_id identifica el cobro. Si llega un reserva_id ya procesado
+  //   (por ejemplo, un reintento), Payment no vuelve a cobrar y devuelve el resultado original.
   rpc ProcesarPago (PaymentRequestDto) returns (PaymentResponseDto);
 }
 
 message PaymentRequestDto {
-  string reserva_id = 1;       // UUID de la reserva retenida.
-  double monto = 2;            // Alineado al diagrama: PaymentRequestDto.Monto: double.
-  bool simular_rechazo = 3;    // Solo para pruebas del TP.
+  // UUID de la solicitud generada por Availability (SolicitudReserva.solicitudId).
+  // Se repite en los logs de auditoría de todos los servicios para seguir la cadena de sucesos.
+  string solicitud_id = 1;
+
+  // UUID de la reserva retenida creada por Booking.
+  string reserva_id = 2;
+
+  // Monto a cobrar en centavos (ejemplo: $1500,50 se envía como 150050).
+  // Entero para no perder precisión: double no representa exactamente los decimales.
+  int64 monto_centavos = 3;
+
+  // Solo para pruebas del TP: si es true, Payment rechaza el pago.
+  bool simular_rechazo = 4;
 }
 
 message PaymentResponseDto {
-  bool exitoso = 1;            // Alineado a PaymentResponseDto.Exitoso.
-  string mensaje = 2;          // Alineado a PaymentResponseDto.Mensaje.
-  string codigo_transferencia = 3; // Alineado a PaymentResponseDto.CodigoTransferencia.
-}
+  // true: pago aprobado. false: pago rechazado (Booking rechaza la reserva por "pago fallido").
+  bool exitoso = 1;
 
-enum EstadoPago {
-  ESTADO_PAGO_NO_ESPECIFICADO = 0;
-  ESTADO_PAGO_EXITOSO = 1;     // Equivale a EstadoPago.Exitoso.
-  ESTADO_PAGO_FALLIDO = 2;     // Equivale a EstadoPago.Fallido.
+  // Descripción legible del resultado; si el pago se rechazó, indica el motivo.
+  string mensaje = 2;
+
+  // Identificador de la transacción generado por Payment. Vacío si el pago se rechazó.
+  string codigo_transferencia = 3;
 }

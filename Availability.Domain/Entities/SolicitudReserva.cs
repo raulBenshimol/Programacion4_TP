@@ -10,6 +10,7 @@ namespace Availability.Domain.Entities
     public class SolicitudReserva
     {
         public Guid Id { get; set; }
+        public int EventoId { get; set; }   
         public int AsientoId { get; set; }
         public int UsuarioId { get; set; }
         public EstadoSolicitud Estado { get; set; }
