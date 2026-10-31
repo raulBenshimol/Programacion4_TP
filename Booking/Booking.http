@@ -1,6 +1,10 @@
-@Booking_HostAddress = http://localhost:5039
+@Booking_HostAddress = https://localhost:7109
+### Pegar acá el access_token que devuelve la prueba 1 de AuthServer.http (dura 30 minutos)
+@token = PEGAR_TOKEN_ACA
 
-GET {{Booking_HostAddress}}/weatherforecast/
-Accept: application/json
+### 1) Sin token -> 401
+GET {{Booking_HostAddress}}/Booking/3fa85f64-5717-4562-b3fc-2c963f66afa6
 
-###
+### 2) Con token -> 200
+GET {{Booking_HostAddress}}/Booking/3fa85f64-5717-4562-b3fc-2c963f66afa6
+Authorization: Bearer {{token}}

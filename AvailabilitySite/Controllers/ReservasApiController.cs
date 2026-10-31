@@ -2,6 +2,7 @@
 using Availability.Controllers.Controllers;
 using Availability.Controllers.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AvailabilitySite.Controllers;
 
@@ -26,6 +27,7 @@ public class ReservasApiController : ControllerBase
     }
 
     // POST: api/reservas/solicitar
+    [Authorize] // solo un usuario logueado con Google puede solicitar una reserva
     [HttpPost("solicitar")]
     public async Task<IActionResult> SolicitarReserva([FromBody] SolicitudRequestDto request)
     {
