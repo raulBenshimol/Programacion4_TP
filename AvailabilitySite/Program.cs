@@ -1,3 +1,4 @@
+using Serilog;
 using Microsoft.OpenApi.Models;
 using Availability.Application.Interfaces;
 using Availability.Application.UseCases;
@@ -8,6 +9,21 @@ using Microsoft.EntityFrameworkCore;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configuracion de logs: consola y de archivo
+builder.Host.UseSerilog((context, configuration) =>
+{
+    configuration
+    .MinimumLevel.Information()
+
+    .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning)
+
+    .WriteTo.Console()
+    .WriteTo.File(
+       "logs/availability-.log",
+        rollingInterval: RollingInterval.Day,
+        retainedFileCountLimit: 7);
+});
 
 // 1. Infraestructura (Base de datos, repositorios, broker)
 builder.Services.AddInfrastructure(builder.Configuration);
