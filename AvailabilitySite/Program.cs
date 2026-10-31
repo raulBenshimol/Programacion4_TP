@@ -1,3 +1,4 @@
+using Serilog;
 using Microsoft.OpenApi.Models;
 using Availability.Application.Interfaces;
 using Availability.Application.UseCases;
@@ -9,6 +10,21 @@ using AvailabilitySite.Auth;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configuracion de logs: consola y de archivo
+builder.Host.UseSerilog((context, configuration) =>
+{
+    configuration
+    .MinimumLevel.Information()
+
+    .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning)
+
+    .WriteTo.Console()
+    .WriteTo.File(
+       "logs/availability-.log",
+        rollingInterval: RollingInterval.Day,
+        retainedFileCountLimit: 7);
+});
 
 // 1. Infraestructura (Base de datos, repositorios, broker)
 builder.Services.AddInfrastructure(builder.Configuration);
@@ -34,10 +50,11 @@ builder.Services.AddSingleton<TokenClient>();
 builder.Services.AddTransient<TokenHandler>();
 
 // CAMBIO: Cliente HTTP para llamar a Booking (el de tu compañero)
-builder.Services.AddHttpClient("BookingClient", client =>
-{
-    client.BaseAddress = new Uri("https://localhost:7109/");
-}).AddHttpMessageHandler<TokenHandler>(); // Para enviar el token al BookingService
+builder.Services.AddHttpClient<IBookingService, Availability.Infrastructure.ExternalServices.BookingHttpClient>(
+    client =>
+    {
+        client.BaseAddress = new Uri("https://localhost:7109/");
+    }).AddHttpMessageHandler<TokenHandler>(); // Para enviar el token al BookingService
 
 // Login de usuarios con Google (proveedor) por OpenID Connect
 // Después de Google, el sitio cambia el id_token por el token del AuthServer y recuerda al usuario con una cookie.
@@ -67,7 +84,6 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.SaveTokens = true;                // guarda el id_token para enviarlo al AuthServer
     });
 builder.Services.AddAuthorization();
-
 // 4. MVC
 builder.Services.AddControllersWithViews();
 
@@ -92,6 +108,20 @@ using (var scope = app.Services.CreateScope())
 }
 */
 
+
+// Cargar asientos de prueba únicamente en desarrollo.
+if (app.Environment.IsDevelopment())
+{
+    using var scope = app.Services.CreateScope();
+
+    var db = scope.ServiceProvider
+        .GetRequiredService<AvailabilityDbContext>();
+
+    await AsientosSeed.InicializarAsync(db);
+}
+
+app.UseStaticFiles();
+
 app.UseRouting();
 // Orden: primero quién sos, después si podés entrar
 app.UseAuthentication();
@@ -99,7 +129,8 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    //pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=ReservasMvc}/{action=Index}/{id?}");
 
 app.Run();
 
