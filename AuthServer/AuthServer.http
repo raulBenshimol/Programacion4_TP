@@ -18,3 +18,9 @@ POST {{AuthServer_HostAddress}}/connect/token
 Content-Type: application/x-www-form-urlencoded
 
 grant_type=password
+
+### 4) id_token de Google falso -> 401
+POST {{AuthServer_HostAddress}}/connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=google&id_token=falso
