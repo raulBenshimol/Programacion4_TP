@@ -5,6 +5,7 @@ using Availability.Controllers.Presenters;
 using Availability.Infrastructure;
 using Availability.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using AvailabilitySite.Auth;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,11 +29,15 @@ builder.Services.AddScoped<ISolicitudOutputPort>(sp => sp.GetRequiredService<Sol
 builder.Services.AddScoped<Availability.Controllers.Controllers.AvailabilityController>();
 builder.Services.AddScoped<Availability.Controllers.Controllers.SeguimientoController>();
 
+// Token de servicio: Availability se autentica ante Booking con el AuthServer (Client Credentials)
+builder.Services.AddSingleton<TokenClient>();
+builder.Services.AddTransient<TokenHandler>();
+
 // CAMBIO: Cliente HTTP para llamar a Booking (el de tu compañero)
 builder.Services.AddHttpClient("BookingClient", client =>
 {
     client.BaseAddress = new Uri("https://localhost:7109/");
-});
+}).AddHttpMessageHandler<TokenHandler>(); // Para enviar el token al BookingService
 
 // 4. MVC
 builder.Services.AddControllersWithViews();
