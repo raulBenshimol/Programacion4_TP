@@ -27,7 +27,8 @@ var app = builder.Build();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapGrpcService<PaymentGrpcService>();
+// Solo se puede llamar a Payment con un token válido de AuthServer
+app.MapGrpcService<PaymentGrpcService>().RequireAuthorization();
 
 // Configure the HTTP request pipeline.
 app.MapGet("/", () => "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
