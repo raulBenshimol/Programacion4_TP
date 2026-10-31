@@ -29,11 +29,11 @@ builder.Services.AddScoped<Availability.Controllers.Controllers.AvailabilityCont
 builder.Services.AddScoped<Availability.Controllers.Controllers.SeguimientoController>();
 
 // CAMBIO: Cliente HTTP para llamar a Booking (el de tu compañero)
-builder.Services.AddHttpClient("BookingClient", client =>
-{
-    client.BaseAddress = new Uri("https://localhost:7109/");
-});
-
+builder.Services.AddHttpClient<IBookingService, Availability.Infrastructure.ExternalServices.BookingHttpClient>(
+    client =>
+    {
+        client.BaseAddress = new Uri("https://localhost:7109/");
+    });
 // 4. MVC
 builder.Services.AddControllersWithViews();
 
