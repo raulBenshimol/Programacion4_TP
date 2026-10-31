@@ -18,4 +18,8 @@ Implementacion sencilla
 Necesito poder seleccionar eventos, consultar asientos disponibles y mostrarlos en pantalla, tambien quiero agregar botones para solicitar reservas 
 y consultar su estado, aunque por ahora quedaran deshabilitados hasta integrar la autenticacion.
 Vamos a utilizar datos de prueba para verificar su funcionamiento y configurar la aplicacion para que abra directamente en la pagina de reservas.
-Quiero hacerlo paso a paso, aprovechando lo que ya tenemos desarrollado.                                                                                                                                          
+Quiero hacerlo paso a paso, aprovechando lo que ya tenemos desarrollado.   
+
+6- Continuando con el TP, quiero mejorar la navegacion de la interfaz web.
+Vamos modificar las paginas complementarias actuales, con informacion sencilla del proyecto.
+Vamos a utilizar Bootstrap y aprovechar lo que ya tenemos desarrollado, sin afectar el funcionamiento de las reservas.
