@@ -1,0 +1,16 @@
+@{
+    ViewData["Title"] = "Iniciar sesión";
+}
+
+<h1>Iniciar sesión</h1>
+<p>Para solicitar una reserva iniciá sesión con tu cuenta de Gmail.</p>
+
+@if (TempData["Error"] is string error)
+{
+    <div class="alert alert-danger">@error</div>
+}
+
+<form asp-action="LoginGoogle" method="post">
+    <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+    <button type="submit" class="btn btn-primary">Ingresar con Google</button>
+</form>

@@ -1,6 +1,68 @@
-﻿@{
+﻿@*
+@{
     ViewData["Title"] = "Privacy Policy";
 }
+
 <h1>@ViewData["Title"]</h1>
 
 <p>Use this page to detail your site's privacy policy.</p>
+*@
+
+
+
+@{
+    ViewData["Title"] = "Privacidad";
+}
+
+<div class="container mt-4">
+
+    <h2>Privacidad y seguridad</h2>
+
+    <p class="text-muted">
+        Información sobre el uso de datos personales
+        en el Sistema de Reservas.
+    </p>
+
+    <hr />
+
+    <!-- Información del usuario -->
+    <h4>Información del usuario</h4>
+
+    <p>
+        El sistema tiene previsto utilizar únicamente
+        la información necesaria para identificar a los
+        usuarios y gestionar sus solicitudes de reserva.
+    </p>
+
+    <!-- Autenticación -->
+    <h4 class="mt-4">Inicio de sesión y seguridad</h4>
+
+    <p>
+        Para solicitar una reserva será necesario autenticarse
+        mediante una cuenta de Gmail.
+        El acceso a la información de las reservas estará
+        sujeto a controles de autenticación y autorización.
+    </p>
+
+    <!-- Información del proyecto -->
+    <h4 class="mt-4">Proyecto académico</h4>
+
+    <p>
+        Esta aplicación forma parte de un trabajo práctico
+        de Programación IV de la UTN.
+    </p>
+    
+    <div class="alert alert-info mt-4">
+        Esta página tiene carácter informativo y no
+        constituye una política de privacidad definitiva.
+    </div>
+    
+
+    <a asp-controller="ReservasMvc"
+       asp-action="Index"
+       class="btn btn-primary">
+        Volver a reservas
+    </a>
+
+</div>
+

@@ -37,6 +37,24 @@ namespace AvailabilitySite.Auth
             return _token;
         }
 
+        // Login de usuario: cambia el id_token de Google por el token del sistema (grant_type=google).
+        // Devuelve null si el AuthServer no valida la cuenta.
+        public async Task<string?> ObtenerTokenUsuarioAsync(string idTokenGoogle)
+        {
+            var client = _httpClientFactory.CreateClient();
+            var respuesta = await client.PostAsync(_configuration["AuthServer:Url"] + "connect/token",
+                new FormUrlEncodedContent(new Dictionary<string, string>
+                {
+                    ["grant_type"] = "google",
+                    ["id_token"] = idTokenGoogle
+                }));
+            if (!respuesta.IsSuccessStatusCode)
+                return null;
+
+            var datos = await respuesta.Content.ReadFromJsonAsync<RespuestaToken>();
+            return datos!.AccessToken;
+        }
+
         private class RespuestaToken
         {
             [JsonPropertyName("access_token")]
