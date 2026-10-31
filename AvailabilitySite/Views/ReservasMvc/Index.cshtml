@@ -1,0 +1,126 @@
+﻿@model AvailabilitySite.Models.ReservasViewModel
+
+@{
+    ViewData["Title"] = "Disponibilidad de asientos";
+}
+
+<div class="container mt-4">
+
+    <h2>Disponibilidad de asientos</h2>
+    <p class="text-muted">
+        Seleccione un evento para consultar sus asientos disponibles.
+    </p>
+
+    <!-- Selección de eventos de prueba -->
+    <form asp-controller="ReservasMvc"
+          asp-action="Index"
+          method="get"
+          class="mb-4">
+
+        <label for="eventoId" class="form-label">
+            Seleccionar evento
+        </label>
+
+        <select id="eventoId"
+                name="eventoId"
+                class="form-select mb-3">
+
+            <option value="1" selected="@(Model.EventoId == 1)">
+                Evento de prueba 1
+            </option>
+
+            <option value="2" selected="@(Model.EventoId == 2)">
+                Evento de prueba 2
+            </option>
+
+            <option value="3" selected="@(Model.EventoId == 3)">
+                Evento de prueba 3
+            </option>
+        </select>
+
+        <button type="submit" class="btn btn-primary">
+            Consultar asientos
+        </button>
+    </form>
+
+    <!-- Listado de asientos disponibles -->
+    <h4>Asientos disponibles — Evento @Model.EventoId</h4>
+
+    @if (Model.Asientos.Count == 0)
+    {
+        <div class="alert alert-info">
+            @Model.Mensaje
+        </div>
+    }
+    else
+    {
+        <div class="row g-3 mt-2">
+            @foreach (var asiento in Model.Asientos)
+            {
+                <div class="col-md-3 col-sm-6">
+                    <div class="card">
+                        <div class="card-body text-center">
+
+                            <h5>Asiento @asiento.Codigo</h5>
+
+                            <p>Estado: @asiento.Estado</p>
+
+                            <span class="badge bg-success">
+                                Disponible
+                            </span>
+
+                            <!-- Reserva pendiente de integrar con autenticación -->
+                            <div class="mt-3">
+                                <button type="button"
+                                        class="btn btn-primary btn-sm"
+                                        disabled
+                                        title="Requiere iniciar sesión">
+                                    Solicitar reserva
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    <!-- Sección de seguimiento de solicitudes -->
+    <div class="mt-5">
+
+        <hr />
+
+        <h4>Consultar estado de una solicitud</h4>
+
+        <p class="text-muted">
+            Ingrese el identificador de su solicitud para consultar su estado.
+        </p>
+
+        <div class="mb-3">
+            <label for="solicitudId" class="form-label">
+                Identificador de solicitud
+            </label>
+
+            <input type="text"
+                   id="solicitudId"
+                   class="form-control"
+                   placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+                   disabled />
+        </div>
+
+        <!-- Seguimiento pendiente de integrar con autenticación -->
+        <button type="button"
+                class="btn btn-secondary"
+                disabled
+                title="Requiere iniciar sesión">
+            Consultar estado
+        </button>
+
+        <p class="text-muted mt-2">
+            El seguimiento estará disponible cuando se integre la autenticación.
+        </p>
+
+    </div>
+
+</div>

@@ -74,10 +74,25 @@ using (var scope = app.Services.CreateScope())
 }
 */
 
+
+// Cargar asientos de prueba únicamente en desarrollo.
+if (app.Environment.IsDevelopment())
+{
+    using var scope = app.Services.CreateScope();
+
+    var db = scope.ServiceProvider
+        .GetRequiredService<AvailabilityDbContext>();
+
+    await AsientosSeed.InicializarAsync(db);
+}
+
+app.UseStaticFiles();
+
 app.UseRouting();
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    //pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=ReservasMvc}/{action=Index}/{id?}");
 
 app.Run();
 
