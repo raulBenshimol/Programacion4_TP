@@ -1,4 +1,5 @@
-﻿using Availability.Controllers.Controllers;
+﻿
+using Availability.Controllers.Controllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AvailabilitySite.Controllers;
@@ -8,17 +9,62 @@ namespace AvailabilitySite.Controllers;
 public class SeguimientoApiController : ControllerBase
 {
     private readonly SeguimientoController _seguimientoLogicController;
+    private readonly ILogger<SeguimientoApiController> _logger;
 
-    public SeguimientoApiController(SeguimientoController seguimientoLogicController)
+    // Inyectamos el controlador lógico del Anillo 3 y el logger.
+    public SeguimientoApiController(
+        SeguimientoController seguimientoLogicController,
+        ILogger<SeguimientoApiController> logger)
     {
         _seguimientoLogicController = seguimientoLogicController;
+        _logger = logger;
     }
 
-    // GET: api/seguimiento/{id}
+    // GET: api/SeguimientoApi/{id}
     [HttpGet("{id}")]
     public async Task<IActionResult> ObtenerEstado(Guid id)
     {
-        var resultado = await _seguimientoLogicController.ObtenerEstado(id);
-        return Ok(resultado);
+        _logger.LogInformation(
+            "[AUDITORIA] INICIO API - Consulta de seguimiento. SolicitudId: {SolicitudId}",
+            id);
+
+        try
+        {
+            var resultado = await _seguimientoLogicController.ObtenerEstado(id);
+
+            // Identificamos cuando la solicitud no existe en Availability.
+            var propiedadMensaje = resultado.GetType().GetProperty("Mensaje");
+
+            if (propiedadMensaje?.GetValue(resultado) is string mensaje &&
+                mensaje == "Solicitud no encontrada en Availability")
+            {
+                _logger.LogWarning(
+                    "[AUDITORIA] FIN API - Solicitud no encontrada. SolicitudId: {SolicitudId}",
+                    id);
+
+                return NotFound(new
+                {
+                    Mensaje = "Solicitud no encontrada en Availability"
+                });
+            }
+
+            _logger.LogInformation(
+                "[AUDITORIA] FIN API - Consulta de seguimiento. SolicitudId: {SolicitudId}",
+                id);
+
+            return Ok(resultado);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(
+                ex,
+                "[AUDITORIA] ERROR API - Consulta de seguimiento. SolicitudId: {SolicitudId}",
+                id);
+
+            return StatusCode(500, new
+            {
+                Mensaje = "Error interno al consultar el estado de la solicitud."
+            });
+        }
     }
 }

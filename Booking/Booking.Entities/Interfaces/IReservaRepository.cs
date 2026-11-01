@@ -16,7 +16,7 @@ public interface IReservaRepository
     Task<Reserva?> ObtenerPorSolicitudId(Guid solicitudId, CancellationToken ct = default);
 
     // TODO(contrato): no está en el diagrama; para GET /api/eventos/{eventoId}/asientos-ocupados.
-    Task<IReadOnlyList<string>> ObtenerAsientosOcupados(Guid eventoId, CancellationToken ct = default);
+    Task<IReadOnlyList<string>> ObtenerAsientosOcupados(int eventoId, CancellationToken ct = default);
 
     // TODO(diagrama): no está en el diagrama; vence las Retenidas con vencimiento <= ahora y las devuelve.
     Task<IReadOnlyList<Reserva>> VencerRetenidas(DateTime ahora, CancellationToken ct = default);
