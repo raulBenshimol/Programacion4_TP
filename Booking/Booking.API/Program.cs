@@ -1,8 +1,18 @@
+using Azure.Messaging.ServiceBus;
+using Booking.Booking.Business;
+using Booking.Booking.Business.Interfaces;
+using Booking.Booking.Data;
+using Booking.Booking.Entities.Booking.Business.Interfaces;
+using Booking.Booking.Entities.Interfaces;
+using Booking.Booking.Infra.Auth;
+using Booking.Booking.Infra.Messaging.Azure;
+using Booking.Booking.Infra.Payment.Grpc;
+using Microsoft.EntityFrameworkCore;
+using SistemaReservas.Contracts.Payment.V1;
+
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Booking.Auth;
-using SistemaReservas.Contracts.Payment.V1;
 var builder = WebApplication.CreateBuilder(args);
 // El appsettings.json de Booking está dentro de la carpeta Booking.API, no en la raíz del proyecto.
 builder.Configuration.AddJsonFile("Booking.API/appsettings.json", optional: false);
@@ -26,21 +36,30 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 builder.Services.AddAuthorization();
-// Booking -> Payment (gRPC): Booking pide su token al AuthServer (client credentials)
-// y se agrega solo en la Metadata ("Authorization: Bearer ...") de cada llamada a Payment.
+builder.Services.AddOpenApi();
+
+//Bruno Scucimarri
+builder.Services.AddDbContext<BookingDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("BookingDb") ?? "Data Source=booking.db"));
+builder.Services.AddScoped<IReservaRepository, ReservaRepository>();
+builder.Services.AddScoped<IBookingService, BookingService>();
+
+// ServiceBusClient es thread-safe y caro de crear: se comparte una sola instancia.
+builder.Services.AddSingleton(_ => new ServiceBusClient(builder.Configuration.GetConnectionString("AzureServiceBus")));
+builder.Services.AddSingleton<IValidator<SolicitudReservaMensaje>, SolicitudReservaValidator>();
+builder.Services.AddHostedService<AzureServiceBusConsumer>();
+
 builder.Services.AddHttpClient();
-builder.Services.AddSingleton<TokenClient>();
+builder.Services.AddSingleton<AuthServerTokenProvider>();
+// Booking pide su token al AuthServer (Client Credentials) y se agrega solo en cada llamada a Payment.
 builder.Services.AddGrpcClient<PaymentService.PaymentServiceClient>(options =>
-{
-    options.Address = new Uri(builder.Configuration["Payment:Url"]!);
-})
+        options.Address = new Uri(builder.Configuration["Payment:Url"]!))
     .AddCallCredentials(async (context, metadata, serviceProvider) =>
     {
-        var token = await serviceProvider.GetRequiredService<TokenClient>().ObtenerTokenAsync();
+        string token = await serviceProvider.GetRequiredService<AuthServerTokenProvider>().ObtenerToken();
         metadata.Add("Authorization", $"Bearer {token}");
     });
-
-builder.Services.AddOpenApi();
+builder.Services.AddScoped<IPaymentClient, GrpcPaymentClient>();
 
 var app = builder.Build();
 

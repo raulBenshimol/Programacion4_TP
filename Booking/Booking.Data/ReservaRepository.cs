@@ -62,7 +62,7 @@ public class ReservaRepository(BookingDbContext context) : IReservaRepository
         context.Reservas.FirstOrDefaultAsync(r => r.SolicitudId == solicitudId, ct);
 
     // Mismo criterio que el índice parcial: una Retenida ya vencida ocupa hasta que el job la vence.
-    public async Task<IReadOnlyList<string>> ObtenerAsientosOcupados(Guid eventoId, CancellationToken ct = default) =>
+    public async Task<IReadOnlyList<string>> ObtenerAsientosOcupados(int eventoId, CancellationToken ct = default) =>
         await context.Reservas
             .AsNoTracking()
             .Where(r => r.EventoId == eventoId

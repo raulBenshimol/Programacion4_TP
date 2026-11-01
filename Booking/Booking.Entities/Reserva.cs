@@ -12,7 +12,8 @@ public class Reserva
     public Guid SolicitudId { get; set; }
 
     // TODO(contrato): no está en el diagrama; el asiento se repite en cada evento.
-    public Guid EventoId { get; set; }
+    // int como lo publica Availability; SolicitudReserva.schema.json todavía dice Guid.
+    public int EventoId { get; set; }
 
     // TODO(contrato): string como en SolicitudReserva.schema.json (ej. "A15"), no int como en el diagrama.
     public string AsientoId { get; set; } = string.Empty;
