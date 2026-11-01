@@ -20,10 +20,10 @@ namespace Booking.Booking.Business
             _paymentClient = paymentClient;
             _configuration = configuration;
         }
-        public async Task<BookingResponseDto?> GetReservationStatusById(Guid reservationId)
+        public async Task<BookingResponseDto?> GetReservationStatusBySolicitudId(Guid solicitudId)
         {
-            
-            Reserva? reserva = await this._reservaRepository.ObtenerPorId(reservationId);
+
+            Reserva? reserva = await this._reservaRepository.ObtenerPorSolicitudId(solicitudId);
 
             if (reserva is null)
             {
