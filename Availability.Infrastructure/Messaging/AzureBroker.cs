@@ -35,6 +35,7 @@ public class AzureBroker : IMessageBroker, IAsyncDisposable
         var contenido = new SolicitudReservaMensaje
         {
             SolicitudId = solicitud.Id,
+            EventoId = solicitud.EventoId,
             AsientoId = solicitud.AsientoId,
             UsuarioId = solicitud.UsuarioId,
             FechaSolicitud = solicitud.FechaCreacion
