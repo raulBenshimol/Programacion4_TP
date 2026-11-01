@@ -17,4 +17,5 @@
     <Project Path="AvailabilitySite/AvailabilitySite.csproj" Id="e97f3b58-f95d-407d-b4a6-266814c69213" />
   </Folder>
   <Project Path="Booking/Booking.csproj" Id="0f766b78-5bf4-4d7f-8557-c73c3f7578ea" />
+  <Project Path="AuthServer/AuthServer.csproj" Id="71f20ac4-4884-4576-bf02-067787eb99ae" />
 </Solution>

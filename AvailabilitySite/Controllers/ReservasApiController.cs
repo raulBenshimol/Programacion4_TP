@@ -1,7 +1,7 @@
-﻿
-using Availability.Controllers.Controllers;
+﻿using Availability.Controllers.Controllers;
 using Availability.Controllers.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AvailabilitySite.Controllers;
 
@@ -71,6 +71,7 @@ public class ReservasApiController : ControllerBase
     }
 
     // POST: api/ReservasApi/solicitar
+    [Authorize] // Requiere que el usuario esté autenticado.
     [HttpPost("solicitar")]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -122,3 +123,5 @@ public class ReservasApiController : ControllerBase
         }
     }
 }
+ 
+
