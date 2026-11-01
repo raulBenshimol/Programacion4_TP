@@ -25,7 +25,7 @@ public static class DependencyInjection
         services.AddScoped<IAsientoRepository, AsientoRepository>();
         services.AddScoped<ISolicitudRepository, SolicitudRepository>();
 
-        // 3. Registrar el Broker (simulado)
+        // 3. Registrar el Broker (Azure Service Bus).
         services.AddSingleton<IMessageBroker, AzureBroker>();
 
         return services;
