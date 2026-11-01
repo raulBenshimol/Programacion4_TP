@@ -19,14 +19,14 @@ namespace Booking.Controllers
             _bookingService = bookingService;
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<BookingResponseDto>> GetReservationStatusById(Guid id)
+        [HttpGet("{solicitudId}")]
+        public async Task<ActionResult<BookingResponseDto>> GetReservationStatusBySolicitudId(Guid solicitudId)
         {
             _logger.LogInformation("Peticion recibida en Booking Controller");
 
             try
             {
-                BookingResponseDto? respuesta = await _bookingService.GetReservationStatusById(id);
+                BookingResponseDto? respuesta = await _bookingService.GetReservationStatusBySolicitudId(solicitudId);
 
                 if (respuesta is null)
                 {
@@ -39,7 +39,7 @@ namespace Booking.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error inesperado al obtener la reserva {ReservaId}", id);
+                _logger.LogError(ex, "Error inesperado al obtener la reserva de la solicitud {SolicitudId}", solicitudId);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }

@@ -7,6 +7,6 @@ namespace Booking.Booking.Entities.Booking.Business.Interfaces
     public interface IBookingService
     {
         Task<BookingResponseDto> ProcessReservation(Guid solicitudId, int eventoId, int seatId, int userId);
-        Task<BookingResponseDto?> GetReservationStatusById(Guid reservationId);
+        Task<BookingResponseDto?> GetReservationStatusBySolicitudId(Guid solicitudId);
     } 
 }
