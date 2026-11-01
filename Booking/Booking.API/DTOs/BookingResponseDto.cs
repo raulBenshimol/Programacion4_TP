@@ -1,4 +1,5 @@
-﻿using Booking.Booking.Entities.Booking.Entities.Enums;
+﻿//Bruno Scucimarri
+using Booking.Booking.Entities.Booking.Entities.Enums;
 
 namespace Booking.Booking.Entities.Booking.API.DTOs
 {

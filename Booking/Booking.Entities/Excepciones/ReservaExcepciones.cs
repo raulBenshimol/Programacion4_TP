@@ -2,7 +2,7 @@ namespace Booking.Booking.Entities.Excepciones;
 
 // Excepciones del dominio: Data traduce a estas los errores de SQLite, así Business no conoce EF Core.
 
-public class AsientoOcupadoException(Guid eventoId, string asientoId)
+public class AsientoOcupadoException(int eventoId, string asientoId)
     : Exception($"El asiento {asientoId} del evento {eventoId} ya está ocupado.");
 
 public class SolicitudDuplicadaException(Guid solicitudId)
