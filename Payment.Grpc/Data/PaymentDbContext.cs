@@ -5,10 +5,27 @@ using Payment.Grpc.Models;
 namespace Payment.Grpc.Data
 
 {
-    public class PaymentDbContext(DbContextOptions<PaymentDbContext> options) : DbContext(options)
+    public class PaymentDbContext : DbContext
     {
-        public DbSet<PayModel> Pagos => Set<PayModel>();
-        //TODO terminar de definir el DB context para pagos, con sus indices y demas
+        public PaymentDbContext(DbContextOptions<PaymentDbContext> options) : base(options)
+        {
+        }
 
+        public DbSet<PayModel> Pagos => Set<PayModel>();
+        
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            var pago = modelBuilder.Entity<PayModel>();
+            pago.ToTable("Pagos");
+            pago.HasKey(p => p.Id);
+            pago.Property(p => p.SolicitudId).IsRequired();
+            pago.Property(p => p.ReservaId).IsRequired();
+            pago.Property(p => p.Monto).HasPrecision(18, 2);
+            pago.Property(p => p.FechaTransaccion).IsRequired();
+            // Idempotencia: Service Bus puede entregar el mismo mensaje dos veces; el segundo choca acá.
+            pago.HasIndex(p => p.SolicitudId)
+                .IsUnique()
+                .HasDatabaseName("UX_Pagos_SolicitudId");
+        }
     }
 }

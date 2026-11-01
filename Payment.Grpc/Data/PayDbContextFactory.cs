@@ -9,11 +9,10 @@ namespace Payment.Grpc.Data
         {
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                //.AddJsonFile(Path.Combine("Booking.API", "appsettings.json"), optional: true)
                 .AddEnvironmentVariables()
                 .Build();
 
-            var connectionString = configuration.GetConnectionString("PaymentDb") ?? "Data Source=payment.db";
+            var connectionString = configuration.GetConnectionString("PaymentDb") ?? "Data Source=payments.db";
 
             return new PaymentDbContext(new DbContextOptionsBuilder<PaymentDbContext>()
                 .UseSqlite(connectionString)

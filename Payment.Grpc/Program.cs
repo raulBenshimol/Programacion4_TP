@@ -1,4 +1,6 @@
+using Microsoft.EntityFrameworkCore;
 using Payment.Grpc.Services;
+using Payment.Grpc.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
