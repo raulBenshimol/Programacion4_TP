@@ -1,6 +1,8 @@
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Booking.Auth;
+using SistemaReservas.Contracts.Payment.V1;
 var builder = WebApplication.CreateBuilder(args);
 // El appsettings.json de Booking está dentro de la carpeta Booking.API, no en la raíz del proyecto.
 builder.Configuration.AddJsonFile("Booking.API/appsettings.json", optional: false);
@@ -24,7 +26,20 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 builder.Services.AddAuthorization();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+// Booking -> Payment (gRPC): Booking pide su token al AuthServer (client credentials)
+// y se agrega solo en la Metadata ("Authorization: Bearer ...") de cada llamada a Payment.
+builder.Services.AddHttpClient();
+builder.Services.AddSingleton<TokenClient>();
+builder.Services.AddGrpcClient<PaymentService.PaymentServiceClient>(options =>
+{
+    options.Address = new Uri(builder.Configuration["Payment:Url"]!);
+})
+    .AddCallCredentials(async (context, metadata, serviceProvider) =>
+    {
+        var token = await serviceProvider.GetRequiredService<TokenClient>().ObtenerTokenAsync();
+        metadata.Add("Authorization", $"Bearer {token}");
+    });
+
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
