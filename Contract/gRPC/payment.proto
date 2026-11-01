@@ -10,7 +10,7 @@ service PaymentService {
   // - Pago aprobado o rechazado: respuesta normal (estado gRPC OK); ver PaymentResponseDto.exitoso.
   // - Errores gRPC solo para problemas técnicos o de pedido:
   //   INVALID_ARGUMENT: datos inválidos (UUID mal formado, monto menor o igual a cero).
-  //   UNAUTHENTICATED: token ausente o inválido (cuando se active Keycloak).
+  //   UNAUTHENTICATED: token ausente o inválido (token del AuthServer en la Metadata "Authorization: Bearer ...").
   // - Si Payment no responde a tiempo, Booking recibe UNAVAILABLE o DEADLINE_EXCEEDED
   //   y lo trata como "pago no disponible".
   // - Idempotencia: reserva_id identifica el cobro. Si llega un reserva_id ya procesado
