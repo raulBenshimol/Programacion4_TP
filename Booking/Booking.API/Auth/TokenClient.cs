@@ -1,0 +1,50 @@
+﻿using System.Text.Json.Serialization;
+
+namespace Booking.Auth
+{
+    // Pide al AuthServer el token de Booking (OAuth2 Client Credentials) y lo reutiliza hasta que venza
+    // Se usa para llamar a Payment.gRPC, que exige un token válido.
+    public class TokenClient
+    {
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IConfiguration _configuration;
+        private string? _token;
+        private DateTime _vence;
+
+        public TokenClient(IHttpClientFactory httpClientFactory, IConfiguration configuration)
+        {
+            _httpClientFactory = httpClientFactory;
+            _configuration = configuration;
+        }
+
+        public async Task<string> ObtenerTokenAsync()
+        {
+            if (_token != null && DateTime.UtcNow < _vence)
+                return _token;
+
+            var client = _httpClientFactory.CreateClient();
+            var respuesta = await client.PostAsync(_configuration["AuthServer:Url"] + "connect/token",
+                new FormUrlEncodedContent(new Dictionary<string, string>
+                {
+                    ["grant_type"] = "client_credentials",
+                    ["client_id"] = _configuration["AuthServer:ClientId"]!,
+                    ["client_secret"] = _configuration["AuthServer:ClientSecret"]!
+                }));
+            respuesta.EnsureSuccessStatusCode();
+
+            var datos = await respuesta.Content.ReadFromJsonAsync<RespuestaToken>();
+            _token = datos!.AccessToken;
+            _vence = DateTime.UtcNow.AddSeconds(datos.ExpiresIn - 60); // se pide uno nuevo 1 minuto antes de que venza
+            return _token;
+        }
+
+        private class RespuestaToken
+        {
+            [JsonPropertyName("access_token")]
+            public string AccessToken { get; set; } = string.Empty;
+
+            [JsonPropertyName("expires_in")]
+            public int ExpiresIn { get; set; }
+        }
+    }
+}
