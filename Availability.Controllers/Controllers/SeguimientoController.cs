@@ -5,20 +5,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Availability.Application.UseCases;
+using Availability.Application.Interfaces;
 
 namespace Availability.Controllers.Controllers;
 
 public class SeguimientoController
 {
     private readonly ObtenerResultadoSolicitudUseCase _obtenerResultado;
-    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly IBookingService _bookingService;
 
     public SeguimientoController(
         ObtenerResultadoSolicitudUseCase obtenerResultado,
-        IHttpClientFactory httpClientFactory)
+        IBookingService bookingService)
     {
         _obtenerResultado = obtenerResultado;
-        _httpClientFactory = httpClientFactory;
+        _bookingService = bookingService;
     }
 
     public async Task<object> ObtenerEstado(Guid solicitudId)
@@ -29,35 +30,17 @@ public class SeguimientoController
         if (solicitud == null)
             return new { Mensaje = "Solicitud no encontrada en Availability" };
 
-        // 2. Consultamos a Booking el estado real de la reserva
+        // 2. Consultamos a Booking a traves de la interfaz sin romper los dominios anemicas y la arqitectura de afuera hacia adentro.
         try
         {
-            var client = _httpClientFactory.CreateClient("BookingClient");
+            var bookingResponse = await _bookingService.ObtenerEstadoReserva(solicitudId);
 
-            // Llamamos al endpoint de tu compañero: GET /Booking/{solicitudId}
-            var response = await client.GetAsync($"Booking/{solicitudId}");
-
-            if (response.IsSuccessStatusCode)
+            return new
             {
-                // Si Booking responde OK, devolvemos su respuesta
-                var bookingResponse = await response.Content.ReadFromJsonAsync<object>();
-                return new
-                {
-                    SolicitudId = solicitudId,
-                    EstadoLocal = solicitud.Estado.ToString(),
-                    Booking = bookingResponse
-                };
-            }
-            else
-            {
-                // Si Booking no la encontró (404), devolvemos el estado local
-                return new
-                {
-                    SolicitudId = solicitudId,
-                    EstadoLocal = solicitud.Estado.ToString(),
-                    Booking = "No encontrada en Booking (posiblemente aún en proceso)"
-                };
-            }
+                 SolicitudId = solicitudId,
+                 EstadoLocal = solicitud.Estado.ToString(),
+                 Booking = bookingResponse
+            };
         }
         catch (Exception ex)
         {
