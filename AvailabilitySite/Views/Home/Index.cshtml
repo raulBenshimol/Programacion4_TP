@@ -1,8 +1,91 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Acerca del sistema";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container mt-4">
+
+    <h2>Acerca del Sistema de Reservas</h2>
+
+    <p class="text-muted">
+        Trabajo práctico de Programación IV.
+        Sistema de reserva de asientos basado en microservicios.
+    </p>
+
+    <hr />
+
+    <h4>¿Qué permite hacer el sistema?</h4>
+
+    <p>
+        El sistema está diseñado para consultar la disponibilidad
+        de asientos de distintos eventos, solicitar reservas
+        y consultar el estado de las solicitudes.
+    </p>
+
+    <h4 class="mt-4">Microservicios del proyecto</h4>
+
+    <div class="row g-3 mt-2">
+
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5>AvailabilitySite</h5>
+                    <p>
+                        Permite consultar los asientos disponibles
+                        y registrar solicitudes de reserva.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5>Booking</h5>
+                    <p>
+                        Procesa las solicitudes y administra
+                        el estado de las reservas.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5>Payment</h5>
+                    <p>
+                        Se encarga del procesamiento
+                        de los pagos asociados a las reservas.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5>Authentication Server</h5>
+                    <p>
+                        Permitirá identificar a los usuarios
+                        mediante el inicio de sesión con Gmail.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="alert alert-info mt-4">
+        El sistema se encuentra en desarrollo.
+        Algunas funcionalidades requieren integrar
+        los demás microservicios.
+    </div>
+
+    <a asp-controller="ReservasMvc"
+       asp-action="Index"
+       class="btn btn-primary">
+        Volver a reservas
+    </a>
+
 </div>
+
